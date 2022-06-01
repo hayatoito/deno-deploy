@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<script src="./testharness.js"></script>
+<script src="./testharnessreport.js"></script>
+<script></script>
+<body>
+  <script type="webbundle">
+    {
+      "source": "./resources/wbn/simple.wbn",
+      "scopes": ["./"]
+    }
+  </script>
+  <script>
+    promise_test(async () => {
+      const resource = "./resources/wbn/simple.js";
+      const response = await fetch(resource);
+      assert_true(response.ok, resource + " should be loaded");
+    }, "Subresource should be loaded from webbundle.");
+  </script>
+</body>
