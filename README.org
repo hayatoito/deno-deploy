@@ -1,0 +1,5 @@
+* deno deploy
+- https://dash.deno.com/projects
+- https://deno.com/deploy
+- https://github.com/hayatoito/deno-deploy
+- https://hayatoito-deno-deploy.deno.dev/
