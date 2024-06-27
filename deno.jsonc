@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@std/cli": "jsr:@std/cli@^0.224.7",
+    "@std/http": "jsr:@std/http@^0.224.5"
+  }
+}
