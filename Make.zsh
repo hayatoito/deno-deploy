@@ -1,3 +1,7 @@
+update() {
+  deno add @std/cli
+}
+
 run() {
-  deno run -A ./server.ts --hostname 127.0.0.1
+  deno run --allow-net ./server.ts $@
 }
