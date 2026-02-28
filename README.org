@@ -1,7 +1,7 @@
-* deno HTTP Server APIs
-https://docs.deno.com/runtime/manual/runtime/http_server_apis
 * deno deploy
-- https://dash.deno.com/projects
-- https://deno.com/deploy
+- https://docs.deno.com/deploy/
+- https://console.deno.com/hayato
 - https://github.com/hayatoito/deno-deploy
-- https://hayatoito-deno-deploy.deno.dev/
+- https://deploy.hayato.deno.net/
+* deno http server
+https://docs.deno.com/runtime/fundamentals/http_server/
