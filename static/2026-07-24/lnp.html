@@ -76,6 +76,13 @@
         logDiv.textContent = `[${time}] Fetch Error:\n${err.name}: ${err.message}`;
       }
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('auto') === '1') {
+        doFetch('http://192.168.1.1:8000/');
+      }
+    });
   </script>
 </body>
 </html>
