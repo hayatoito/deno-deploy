@@ -64,6 +64,8 @@
     <button class="btn" onclick="doFetch(document.getElementById('customUrl').value)">Fetch Custom URL</button>
   </div>
 
+  <button class="btn" onclick="doWebSocket('ws://[2a00:79e1:2000:3101::1]:8000/')">WebSocket IPv6 Subnet Target</button>
+  <button class="btn" onclick="doWebRTC('[2a00:79e1:2000:3101::1]')">WebRTC STUN IPv6 Subnet Target</button>
   <button class="btn" onclick="doFetch('http://224.0.0.1:8000/')">fetch("http://224.0.0.1:8000/") (Multicast)</button>
   <button class="btn" onclick="doFetch('http://[2a00:79e1:2000:3101::1]:8000/')">fetch IPv6 Subnet Target</button>
   <button class="btn" onclick="doFetch('http://192.168.1.1:8000/')">fetch("http://192.168.1.1:8000/") (Gateway)</button>
@@ -72,6 +74,34 @@
   <div id="log">Log output will appear here...</div>
 
   <script>
+    function doWebSocket(url) {
+      const logDiv = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      logDiv.textContent = `[${time}] Opening WebSocket to ${url}...`;
+      try {
+        const ws = new WebSocket(url);
+        ws.onerror = (e) => {
+          logDiv.textContent = `[${time}] WebSocket error triggered (raw socket attempt sent).`;
+        };
+      } catch(e) {
+        logDiv.textContent = `[${time}] WebSocket exception: ${e.message}`;
+      }
+    }
+
+    function doWebRTC(ip) {
+      const logDiv = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      logDiv.textContent = `[${time}] Initiating WebRTC STUN gathering to ${ip}...`;
+      try {
+        const pc = new RTCPeerConnection({ iceServers: [{ urls: `stun:${ip}:3478` }] });
+        pc.createDataChannel('test');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        logDiv.textContent = `[${time}] WebRTC STUN offer created (raw socket gathering sent).`;
+      } catch(e) {
+        logDiv.textContent = `[${time}] WebRTC exception: ${e.message}`;
+      }
+    }
+
     async function doFetch(url) {
       const logDiv = document.getElementById('log');
       const time = new Date().toLocaleTimeString();
