@@ -59,6 +59,13 @@
     On Android 17, missing OS permissions will trigger the permission reprompt infobar banner at the bottom of the screen.
   </p>
 
+  <div style="margin: 16px 0;">
+    <input type="text" id="customUrl" value="http://224.0.0.1:8000/" style="width: 100%; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 8px;">
+    <button class="btn" onclick="doFetch(document.getElementById('customUrl').value)">Fetch Custom URL</button>
+  </div>
+
+  <button class="btn" onclick="doFetch('http://224.0.0.1:8000/')">fetch("http://224.0.0.1:8000/") (Multicast)</button>
+  <button class="btn" onclick="doFetch('http://[2a00:79e1:2000:3101::1]:8000/')">fetch IPv6 Subnet Target</button>
   <button class="btn" onclick="doFetch('http://192.168.1.1:8000/')">fetch("http://192.168.1.1:8000/") (Gateway)</button>
   <button class="btn" onclick="doFetch('http://192.168.1.200:8000/')">fetch("http://192.168.1.200:8000/") (Non-Gateway Host)</button>
 
