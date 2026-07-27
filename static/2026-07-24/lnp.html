@@ -78,6 +78,19 @@
         logDiv.textContent = `[${time}] Fetch Error:\n${err.name}: ${err.message}`;
       }
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const autoVal = params.get('auto');
+      if (autoVal) {
+        const seconds = parseInt(autoVal, 10) || 3;
+        const logDiv = document.getElementById('log');
+        logDiv.textContent = `Waiting ${seconds} seconds before initiating fetch to 192.168.1.200...`;
+        setTimeout(() => {
+          doFetch('http://192.168.1.200:8000/');
+        }, seconds * 1000);
+      }
+    });
   </script>
 </body>
 </html>
