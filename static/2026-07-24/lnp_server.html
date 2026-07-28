@@ -54,6 +54,7 @@
     button:active {
       transform: scale(0.98);
     }
+    .btn-verified { background-color: #1a73e8; }
     .btn-server { background-color: #e37400; }
     .btn-https { background-color: #d9480f; }
     #log {
@@ -73,18 +74,21 @@
 <body>
   <div class="container">
     <h1>Platform LNA Real Server Test</h1>
-    <p>Tap the button below to issue a <code>fetch()</code> request to the Android device's local IPv6 HTTP server listening on port 8000.<br>Missing OS permissions will trigger the Platform LNA infobar banner.</p>
+    <p>Tap the button below to issue a <code>fetch()</code> request to test Platform LNA infobar triggering.<br>Missing OS permissions will trigger the Platform LNA infobar banner.</p>
 
     <div class="btn-group">
-      <button class="btn-server" onclick="sendFetch('http://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/', 'Android HTTP Server', 'no-cors')">
-        fetch("http://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/", {mode: 'no-cors'}) [HTTP Server]
+      <button class="btn-verified" onclick="sendFetch('https://[2a00:79e1:2000:3101::1]:8000/', 'Verified Dummy IPv6', 'no-cors')">
+        fetch("https://[2a00:79e1:2000:3101::1]:8000/", {mode: 'no-cors'}) [Verified Infobar Trigger]
       </button>
-      <button class="btn-https" onclick="sendFetch('https://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/', 'Android HTTPS Server', 'no-cors')">
-        fetch("https://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/", {mode: 'no-cors'}) [HTTPS Server]
+      <button class="btn-server" onclick="sendFetch('http://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/', 'Android wlan0 HTTP Server', 'no-cors')">
+        fetch("http://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/", {mode: 'no-cors'}) [wlan0 HTTP Server]
+      </button>
+      <button class="btn-https" onclick="sendFetch('https://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/', 'Android wlan0 HTTPS Server', 'no-cors')">
+        fetch("https://[2a00:79e1:2000:3101:9619:3c34:3f15:b838]:8000/", {mode: 'no-cors'}) [wlan0 HTTPS Server]
       </button>
     </div>
 
-    <div id="log">Tap button to test fetch to real server...</div>
+    <div id="log">Tap button to test fetch...</div>
   </div>
 
   <script>
