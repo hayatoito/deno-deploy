@@ -99,30 +99,20 @@
   </div>
 
   <script>
-    function appendLog(msg, status = "info") {
+    function appendLog(msg, isError = false) {
       const logEl = document.getElementById("log");
       const time = new Date().toLocaleTimeString();
-      let color = "#81c784";
-      if (status === "error") color = "#f28b82";
-      if (status === "warning") color = "#ffb74d";
-      logEl.style.color = color;
+      logEl.style.color = isError ? "#f28b82" : "#81c784";
       logEl.textContent = `[${time}] ${msg}`;
     }
 
     async function sendFetch(url, targetName, mode = "cors") {
-      const startTime = performance.now();
-      appendLog(`[${targetName}] Request initiated to ${url} (mode: ${mode})...\nCheck screen for Infobar banner or result below.`, "info");
+      appendLog(`[${targetName}] Fetch initiated to ${url} (mode: ${mode})...\nCheck top of screen for Infobar banner.`, false);
       try {
         const response = await fetch(url, { method: "GET", mode: mode });
-        const duration = Math.round(performance.now() - startTime);
-        appendLog(`✅ [RESULT: OS PERMISSION GRANTED & CONNECTED]\nResponse received: HTTP ${response.status} (took ${duration}ms)`, "info");
+        appendLog(`✅ [${targetName}] Response received: HTTP ${response.status}`, false);
       } catch (err) {
-        const duration = Math.round(performance.now() - startTime);
-        if (duration < 250) {
-          appendLog(`❌ [RESULT: OS PERMISSION DENIED / BLOCKED BY KERNEL]\nInstant OS block in ${duration}ms.\nCheck for "Allow local network access?" Infobar banner at top.`, "error");
-        } else {
-          appendLog(`✅ [RESULT: OS PERMISSION GRANTED / PASSED AT KERNEL]\nNetwork socket created (took ${duration}ms).\nFailed at network layer (No response / CORS / Connection refused).`, "warning");
-        }
+        appendLog(`[${targetName}] Fetch exception caught: ${err.name} - ${err.message}\n(See Infobar banner above to verify OS permission state)`, true);
       }
     }
   </script>
