@@ -1,134 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Local Network Access Test</title>
+  <title>Local Network Access (LNA) Manual Test Page</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 0 16px;
-      color: #000000;
-      background-color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #dadce0;
     }
     h1 {
-      font-size: 24px;
+      font-size: 1.3rem;
       color: #1a73e8;
+      margin-top: 0;
     }
     p {
+      font-size: 0.9rem;
       color: #5f6368;
-      line-height: 1.5;
+      line-height: 1.4;
     }
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 12px 16px;
-      margin: 12px 0;
-      background-color: #1a73e8;
-      color: white;
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    button {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.85rem 1rem;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: 500;
+      border-radius: 8px;
       cursor: pointer;
-      text-align: center;
-      box-sizing: border-box;
+      color: #ffffff;
+      background-color: #1a73e8;
+      transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    .btn:active {
-      background-color: #1557b0;
+    button:active {
+      transform: scale(0.98);
     }
+    .btn-localhost { background-color: #1b72e8; }
+    .btn-127 { background-color: #0d65d9; }
+    .btn-private-ip { background-color: #137333; }
+    .btn-orange { background-color: #e37400; }
     #log {
-      margin-top: 20px;
-      padding: 12px;
-      background: #f1f3f4;
-      border-radius: 4px;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #202124;
+      color: #81c784;
+      border-radius: 8px;
       font-family: monospace;
+      font-size: 0.85rem;
+      min-height: 80px;
       white-space: pre-wrap;
       word-break: break-all;
-      min-height: 80px;
-      font-size: 13px;
     }
   </style>
 </head>
 <body>
-  <h1>Local Network Access Test</h1>
-  <p>
-    Tap any of the buttons below to issue a fetch() request to a Local Network endpoint (localhost / Private IP).<br>
-    On Android 17, missing OS permissions will trigger the permission reprompt infobar banner at the bottom of the screen.
-  </p>
+  <div class="container">
+    <h1>Local Network Access Test</h1>
+    <p>Tap any of the buttons below to issue a <code>fetch()</code> request to a Local Network endpoint (localhost / Private IP / Local IPv6 Subnet).<br>On Android 17, missing OS permissions will trigger the permission reprompt infobar banner at the bottom of the screen.</p>
 
-  <div style="margin: 16px 0;">
-    <input type="text" id="customUrl" value="http://224.0.0.1:8000/" style="width: 100%; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 8px;">
-    <button class="btn" onclick="doFetch(document.getElementById('customUrl').value)">Fetch Custom URL</button>
+    <div class="btn-group">
+      <button class="btn-localhost" onclick="sendFetch('http://localhost:8000/', 'localhost:8000')">
+        fetch("http://localhost:8000/")
+      </button>
+      <button class="btn-127" onclick="sendFetch('http://127.0.0.1:8000/', '127.0.0.1:8000')">
+        fetch("http://127.0.0.1:8000/")
+      </button>
+      <button class="btn-private-ip" onclick="sendFetch('http://192.168.1.1:8000/', '192.168.1.1:8000')">
+        fetch("http://192.168.1.1:8000/")
+      </button>
+      <button class="btn-orange" onclick="sendFetch('http://[2a00:79e1:2000:3101::1]:8000/', 'IPv6 Subnet HTTP (Bypass Web LNP)', 'no-cors')">
+        fetch("http://[2a00:79e1:2000:3101::1]:8000/", {mode: 'no-cors'}) [Platform LNA - HTTP]
+      </button>
+      <button class="btn-orange" style="background-color: #d9480f;" onclick="sendFetch('https://[2a00:79e1:2000:3101::1]:8000/', 'IPv6 Subnet HTTPS (Bypass Web LNP)', 'no-cors')">
+        fetch("https://[2a00:79e1:2000:3101::1]:8000/", {mode: 'no-cors'}) [Platform LNA - HTTPS]
+      </button>
+    </div>
+
+    <div id="log">Tap a button to test fetch...</div>
   </div>
 
-  <button class="btn" onclick="doWebSocket('ws://[2a00:79e1:2000:3101::1]:8000/')">WebSocket IPv6 Subnet Target</button>
-  <button class="btn" onclick="doWebRTC('[2a00:79e1:2000:3101::1]')">WebRTC STUN IPv6 Subnet Target</button>
-  <button class="btn" onclick="doFetch('http://224.0.0.1:8000/')">fetch("http://224.0.0.1:8000/") (Multicast)</button>
-  <button class="btn" onclick="doFetch('http://[2a00:79e1:2000:3101::1]:8000/')">fetch IPv6 Subnet Target</button>
-  <button class="btn" onclick="doFetch('http://192.168.1.1:8000/')">fetch("http://192.168.1.1:8000/") (Gateway)</button>
-  <button class="btn" onclick="doFetch('http://192.168.1.200:8000/')">fetch("http://192.168.1.200:8000/") (Non-Gateway Host)</button>
-
-  <div id="log">Log output will appear here...</div>
-
   <script>
-    function doWebSocket(url) {
-      const logDiv = document.getElementById('log');
+    function appendLog(msg, isError = false) {
+      const logEl = document.getElementById("log");
       const time = new Date().toLocaleTimeString();
-      logDiv.textContent = `[${time}] Opening WebSocket to ${url}...`;
-      try {
-        const ws = new WebSocket(url);
-        ws.onerror = (e) => {
-          logDiv.textContent = `[${time}] WebSocket error triggered (raw socket attempt sent).`;
-        };
-      } catch(e) {
-        logDiv.textContent = `[${time}] WebSocket exception: ${e.message}`;
-      }
+      logEl.style.color = isError ? "#f28b82" : "#81c784";
+      logEl.textContent = `[${time}] ${msg}`;
     }
 
-    function doWebRTC(ip) {
-      const logDiv = document.getElementById('log');
-      const time = new Date().toLocaleTimeString();
-      logDiv.textContent = `[${time}] Initiating WebRTC STUN gathering to ${ip}...`;
+    async function sendFetch(url, targetName, mode = "cors") {
+      appendLog(`[${targetName}] Sending request to ${url} (mode: ${mode})...\nCheck the bottom of the screen for the permission infobar banner.`);
       try {
-        const pc = new RTCPeerConnection({ iceServers: [{ urls: `stun:${ip}:3478` }] });
-        pc.createDataChannel('test');
-        pc.createOffer().then(offer => pc.setLocalDescription(offer));
-        logDiv.textContent = `[${time}] WebRTC STUN offer created (raw socket gathering sent).`;
-      } catch(e) {
-        logDiv.textContent = `[${time}] WebRTC exception: ${e.message}`;
-      }
-    }
-
-    async function doFetch(url) {
-      const logDiv = document.getElementById('log');
-      const time = new Date().toLocaleTimeString();
-      logDiv.textContent = `[${time}] Sending request to ${url}...\nCheck the bottom of the screen for the permission infobar banner.`;
-      
-      try {
-        const response = await fetch(url, { mode: 'no-cors' });
-        logDiv.textContent = `[${time}] Request sent (no-cors mode) to ${url}.\nResponse type: ${response.type}`;
+        const response = await fetch(url, { method: "GET", mode: mode });
+        appendLog(`[${targetName}] Response received: HTTP ${response.status}`);
       } catch (err) {
-        logDiv.textContent = `[${time}] Fetch Error:\n${err.name}: ${err.message}\nIssuing fallback <img> tag request...`;
-        const img = new Image();
-        img.src = url;
+        appendLog(`[${targetName}] Fetch completed / Error caught:\n${err.message || err}`, true);
       }
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const autoVal = params.get('auto');
-      if (autoVal) {
-        const seconds = parseInt(autoVal, 10) || 3;
-        const logDiv = document.getElementById('log');
-        logDiv.textContent = `Waiting ${seconds} seconds before initiating fetch to 192.168.1.200...`;
-        setTimeout(() => {
-          doFetch('http://192.168.1.200:8000/');
-        }, seconds * 1000);
-      }
-    });
   </script>
 </body>
 </html>
