@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web LNP (Localhost / 127.0.0.1) Test Page</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #dadce0;
+    }
+    h1 {
+      font-size: 1.3rem;
+      color: #d93025;
+      margin-top: 0;
+    }
+    p {
+      font-size: 0.9rem;
+      color: #5f6368;
+      line-height: 1.4;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    button {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #ffffff;
+      background-color: #1a73e8;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .btn-localhost { background-color: #1b72e8; }
+    .btn-127 { background-color: #0d65d9; }
+    .btn-private-ip { background-color: #137333; }
+    #log {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #202124;
+      color: #81c784;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      min-height: 80px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Web LNP (Localhost) Test</h1>
+    <p>Tap a button below to issue a <code>fetch()</code> request to localhost / 127.0.0.1.<br>This page tests if Blink Web LNP / Web LNA triggers a site-level permission prompt.</p>
+
+    <div class="btn-group">
+      <button class="btn-localhost" onclick="sendFetch('http://localhost:8000/', 'localhost:8000')">
+        fetch("http://localhost:8000/")
+      </button>
+      <button class="btn-127" onclick="sendFetch('http://127.0.0.1:8000/', '127.0.0.1:8000')">
+        fetch("http://127.0.0.1:8000/")
+      </button>
+      <button class="btn-private-ip" onclick="sendFetch('http://192.168.1.1:8000/', '192.168.1.1:8000')">
+        fetch("http://192.168.1.1:8000/")
+      </button>
+    </div>
+
+    <div id="log">Tap a button to test fetch...</div>
+  </div>
+
+  <script>
+    function appendLog(msg, isError = false) {
+      const logEl = document.getElementById("log");
+      const time = new Date().toLocaleTimeString();
+      logEl.style.color = isError ? "#f28b82" : "#81c784";
+      logEl.textContent = `[${time}] ${msg}`;
+    }
+
+    async function sendFetch(url, targetName, mode = "cors") {
+      appendLog(`[${targetName}] Fetch initiated to ${url} (mode: ${mode})...\nCheck screen for prompt.`, false);
+      try {
+        const response = await fetch(url, { method: "GET", mode: mode });
+        appendLog(`✅ [${targetName}] Response received: HTTP ${response.status}`, false);
+      } catch (err) {
+        appendLog(`[${targetName}] Fetch exception caught: ${err.name} - ${err.message}`, true);
+      }
+    }
+  </script>
+</body>
+</html>
